@@ -6,10 +6,12 @@ import { BarChart } from './Bar';
 
 export const Sidebar = () => {
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [places, setPlaces] = useState();
+  const [axis, setAxis] = useState(["x", "y"]);
+  const [placesDummy, setPlacesDummy] = useState(["Brunswick Sq Mall", "EB Public Library", "Earle Asphalt", "GuttenPlans"]);
   const [category, setcategory] = useState(["Carbonated", "Food", "Non Carbonated", "Water"]);
   const [chartTitle, setChartTitle] = useState(["Average Value of Transaction", "Payment Type in each Machine", "Sales in each Category", "Peak Sales Date", "Top Selling Category Across Machine"])
   const [xDesc, setxDesc] = useState(["Location", "Location", "Category", "Transaction Date", "Category"])
@@ -20,7 +22,7 @@ export const Sidebar = () => {
   const [categorySales, setcategorySales] = useState([])
   const [creditSales, setCreditSales] = useState([])
   const [transactionMonth, setTransactionMonth] = useState([])
-  const [paymentType, setPaymentType] = useState([])
+  const [categoryTransaction, setCategoryTransaction] = useState([])
 
   // ambil data nya
   useEffect(() => {
@@ -38,6 +40,8 @@ export const Sidebar = () => {
         const cashSalesFromMachine = {};
         const creditSalesFromMachine = {};
         const transactionOnVendingMachineEachMonth = [];
+        const transactionOnVendingMachineEachcategory = [];
+        const test = [];
         const uniquePlace = [];
         const uniqueDate = [];
         const avgSales = [];
@@ -47,9 +51,9 @@ export const Sidebar = () => {
         categorySales["Water"] = parseFloat(0)
         categorySales["Non Carbonated"] = parseFloat(0)
 
-        setData(response.data)
+        // setData(response.data)
         response.data.map((value)=>{
-          const { Location, TotalSales, TotalTransactions, CashSales, CreditSales, CarbonatedSales, FoodSales, NonCarbonatedSales, WaterSales, Month } = value;
+          const { Location, TotalSales, TotalTransactions, CashSales, CreditSales, CarbonatedSales, FoodSales, NonCarbonatedSales, WaterSales, Month} = value;
 
           if(!uniquePlace.includes(Location)){
             uniquePlace.push(Location)
@@ -63,13 +67,63 @@ export const Sidebar = () => {
             uniqueDate.push(monthName)
           }
 
-
           if(!transactionOnVendingMachineEachMonth[Location]){
             transactionOnVendingMachineEachMonth[Location] = {}
             transactionOnVendingMachineEachMonth[Location][monthName] = parseFloat(TotalTransactions);
-          }else{
+          }
+          else{
             transactionOnVendingMachineEachMonth[Location][monthName] = parseFloat(TotalTransactions)
           }
+
+          if(!transactionOnVendingMachineEachcategory[Location]){
+            transactionOnVendingMachineEachcategory[Location] = {}
+            transactionOnVendingMachineEachcategory[Location][category[0]] = parseFloat(CarbonatedSales)
+            transactionOnVendingMachineEachcategory[Location][category[1]] = parseFloat(FoodSales)
+            transactionOnVendingMachineEachcategory[Location][category[2]] = parseFloat(NonCarbonatedSales)
+            transactionOnVendingMachineEachcategory[Location][category[3]] = parseFloat(WaterSales)
+          }else{
+            transactionOnVendingMachineEachcategory[Location][category[0]] += parseFloat(CarbonatedSales)
+            transactionOnVendingMachineEachcategory[Location][category[1]] += parseFloat(FoodSales)
+            transactionOnVendingMachineEachcategory[Location][category[2]] += parseFloat(NonCarbonatedSales)
+            transactionOnVendingMachineEachcategory[Location][category[3]] += parseFloat(WaterSales)
+          }
+          if (!test[category[0]]) {
+            test[category[0]] = {};
+        }
+        if (!test[category[0]][Location]) {
+            test[category[0]][Location] = parseFloat(CarbonatedSales);
+        } else {
+            test[category[0]][Location] += parseFloat(CarbonatedSales);
+        }
+        
+        if (!test[category[1]]) {
+            test[category[1]] = {};
+        }
+        if (!test[category[1]][Location]) {
+            test[category[1]][Location] = parseFloat(FoodSales);
+        } else {
+            test[category[1]][Location] += parseFloat(FoodSales);
+        }
+        
+        if (!test[category[2]]) {
+            test[category[2]] = {};
+        }
+        if (!test[category[2]][Location]) {
+            test[category[2]][Location] = parseFloat(NonCarbonatedSales);
+        } else {
+            test[category[2]][Location] += parseFloat(NonCarbonatedSales);
+        }
+      
+        if (!test[category[3]]) {
+            test[category[3]] = {};
+        }
+        if (!test[category[3]][Location]) {
+            test[category[3]][Location] = parseFloat(WaterSales);
+        } else {
+            test[category[3]][Location] += parseFloat(WaterSales);
+        }
+        
+
 
           if (totalSaleFromMachine[Location]) {
             totalSaleFromMachine[Location] += parseFloat(TotalSales);
@@ -102,7 +156,9 @@ export const Sidebar = () => {
           var avg = totalSaleFromMachine[element]/totalTransactionsFromMachine[element]
           avgSales.push(avg)
         });
-        
+
+        setCategoryTransaction(test)
+        // setCategoryTransaction(transactionOnVendingMachineEachcategory)
         setTransactionMonth(transactionOnVendingMachineEachMonth)
         settransactionDate(uniqueDate)
         setcategorySales(categorySales)
@@ -121,7 +177,6 @@ export const Sidebar = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  console.log(transactionMonth);
 
   const averageData ={
     labels:places,
@@ -203,6 +258,41 @@ export const Sidebar = () => {
     ]
   }
 
+  const categoryTransactionData = { 
+    labels: places,
+    datasets: [
+      { 
+        label: category[0],
+        data: categoryTransaction[category[0]],
+        backgroundColor: "#9F496E",
+        borderColor: "#9F496E",
+        borderWidth: 1,
+      },
+      { 
+        label: category[1],
+        data: categoryTransaction[category[1]],
+        backgroundColor: "#cfc282",
+        borderColor: "#cfc282",
+        borderWidth: 1,
+      },
+      { 
+        label: category[2],
+        data: categoryTransaction[category[2]],
+        backgroundColor: "#5fb883",
+        borderColor: "#5fb883",
+        borderWidth: 1,
+      },
+      { 
+        label: category[3],
+        data: categoryTransaction[category[3]],
+        backgroundColor: "#7891de",
+        borderColor: "#7891de",
+        borderWidth: 1,
+      },
+      
+    ]
+  }
+
   return (
     <>
       <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-secondary" aria-label="Sidebar">
@@ -257,13 +347,16 @@ export const Sidebar = () => {
               <LineGraph title={chartTitle[0]} data={averageData} xDesc={xDesc[0]} yDesc={yDesc[0]}/>
             </div>
             <div className="flex items-center justify-center h-96 mb-12 ">
-              <BarChart title={chartTitle[1]} data={paymentTypeData} xDesc={xDesc[1]} yDesc={yDesc[1]}/>
+              <BarChart title={chartTitle[1]} data={paymentTypeData} xDesc={xDesc[1]} yDesc={yDesc[1]} xStacked={false} yStacked={false} axis={axis[0]}/>
             </div>
             <div className="flex items-center justify-center h-96 mb-12 ">
-              <BarChart title={chartTitle[2]} data={categoryData} xDesc={xDesc[2]} yDesc={yDesc[2]}/>
+              <BarChart title={chartTitle[2]} data={categoryData} xDesc={xDesc[2]} yDesc={yDesc[2]} xStacked={false} yStacked={false} axis={axis[0]}/>
             </div>
             <div className="flex items-center justify-center h-96 mb-12 ">
-              <BarChart title={chartTitle[3]} data={dateData} xDesc={xDesc[3]} yDesc={yDesc[3]}/>
+              <BarChart title={chartTitle[3]} data={dateData} xDesc={xDesc[3]} yDesc={yDesc[3]} xStacked={false} yStacked={false} axis={axis[0]}/>
+            </div>
+            <div className="flex items-center justify-center h-96 mb-12 ">
+              <BarChart title={chartTitle[3]} data={categoryTransactionData} xDesc={xDesc[3]} yDesc={yDesc[3]} xStacked={true} yStacked={true} axis={axis[1]}/>
             </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 
-export const BarChart = ({data, title, xDesc, yDesc}) => {
+export const BarChart = ({data, title, xDesc, yDesc, xStacked, yStacked, axis}) => {
 
 
   const options = {
@@ -34,8 +34,10 @@ export const BarChart = ({data, title, xDesc, yDesc}) => {
         },
       },
     },
+    indexAxis: axis,
     scales: {
       x: {
+        stacked: xStacked,
         title: {
           display: true,
           text: xDesc,
@@ -58,6 +60,7 @@ export const BarChart = ({data, title, xDesc, yDesc}) => {
         },
       },
       y: {
+        stacked: yStacked,
         title: {
           display: true,
           text: yDesc,
