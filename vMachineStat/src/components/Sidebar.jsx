@@ -349,6 +349,7 @@ export const Sidebar = () => {
               </div>
             </div>
             
+            {/* here weh */}
             <div className="flex items-center justify-center h-96 mb-16 pb-5 bg-white ml-80 mr-80">
               <LineGraph title={chartTitle[0]} data={averageData} xDesc={xDesc[0]} yDesc={yDesc[0]}/>
             </div>
@@ -362,7 +363,7 @@ export const Sidebar = () => {
               <BarChart title={chartTitle[3]} data={dateData} xDesc={xDesc[3]} yDesc={yDesc[3]} xStacked={false} yStacked={false} axis={axis[0]}/>
             </div>
             <div className="flex items-center justify-center h-96 bg-white ml-80 mr-80">
-              <BarChart title={chartTitle[3]} data={categoryTransactionData} xDesc={xDesc[3]} yDesc={yDesc[3]} xStacked={true} yStacked={true} axis={axis[1]}/>
+              <BarChart title={chartTitle[4]} data={categoryTransactionData} xDesc={xDesc[4]} yDesc={yDesc[4]} xStacked={true} yStacked={true} axis={axis[1]}/>
             </div>
         </div>
       </div>
