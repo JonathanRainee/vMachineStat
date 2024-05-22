@@ -6,15 +6,29 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export const BarChart = ({data, title, xDesc, yDesc, xStacked, yStacked, axis}) => {
 
+  const plugin = {
+    id: 'customCanvasBackgroundColor',
+    beforeDraw: (chart, args, options) => {
+      const {ctx} = chart;
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-over';
+      ctx.fillStyle = options.color || '#99ffff';
+      ctx.fillRect(0, 0, chart.width, chart.height);
+      ctx.restore();
+    }
+  };
 
   const options = {
     plugins: {
+      customCanvasBackgroundColor: {
+        color: 'white',
+      },
       title: {
         display: true,
         text: title,
         color:"#2B262D",
         font: {
-          size: 24, 
+          size: 14, 
         },
       },
       tooltip: {

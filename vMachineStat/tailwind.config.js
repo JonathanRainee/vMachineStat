@@ -5,7 +5,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: { 
+        custom: ["'Press Start 2P'", "system-ui"],
+      },
+    },
+    
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
@@ -18,8 +23,9 @@ export default {
       'silver': '#ecebff',
       'bubble-gum': '#ff77e9',
       'bermuda': '#78dcca',
-      'main' : '#F2EBE5',
-      'secondary' : '#647295',
+      'main' : '#FDE49E',
+      'hover' : '#D8B384',
+      'secondary' : '#6DC5D1',
       'tertiary': '#9F496E'
     },
   },

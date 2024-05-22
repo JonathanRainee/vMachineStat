@@ -6,7 +6,7 @@ import { BarChart } from './Bar';
 
 export const Sidebar = () => {
 
-  // const [data, setData] = useState([]);
+  // variable2 utama
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [places, setPlaces] = useState();
@@ -34,6 +34,7 @@ export const Sidebar = () => {
         return response.json();
       })
       .then(response => {
+        // variable penampung
         const categorySales = {};
         const totalSaleFromMachine = {};
         const totalTransactionsFromMachine = {};
@@ -55,6 +56,7 @@ export const Sidebar = () => {
         response.data.map((value)=>{
           const { Location, TotalSales, TotalTransactions, CashSales, CreditSales, CarbonatedSales, FoodSales, NonCarbonatedSales, WaterSales, Month} = value;
 
+          // buat ambil location
           if(!uniquePlace.includes(Location)){
             uniquePlace.push(Location)
           }
@@ -63,10 +65,12 @@ export const Sidebar = () => {
           const date = new Date(null, m - 1);
           const monthName = date.toLocaleString('en', { month: 'long' })
           
+          // buat ambil month
           if(!uniqueDate.includes(monthName)){
             uniqueDate.push(monthName)
           }
-
+          
+          // buat ambil transaction di vm each month
           if(!transactionOnVendingMachineEachMonth[Location]){
             transactionOnVendingMachineEachMonth[Location] = {}
             transactionOnVendingMachineEachMonth[Location][monthName] = parseFloat(TotalTransactions);
@@ -87,44 +91,43 @@ export const Sidebar = () => {
             transactionOnVendingMachineEachcategory[Location][category[2]] += parseFloat(NonCarbonatedSales)
             transactionOnVendingMachineEachcategory[Location][category[3]] += parseFloat(WaterSales)
           }
+          
+          // buat ambil transaction di vm each category
           if (!test[category[0]]) {
             test[category[0]] = {};
-        }
-        if (!test[category[0]][Location]) {
-            test[category[0]][Location] = parseFloat(CarbonatedSales);
-        } else {
-            test[category[0]][Location] += parseFloat(CarbonatedSales);
-        }
-        
-        if (!test[category[1]]) {
-            test[category[1]] = {};
-        }
-        if (!test[category[1]][Location]) {
-            test[category[1]][Location] = parseFloat(FoodSales);
-        } else {
-            test[category[1]][Location] += parseFloat(FoodSales);
-        }
-        
-        if (!test[category[2]]) {
-            test[category[2]] = {};
-        }
-        if (!test[category[2]][Location]) {
-            test[category[2]][Location] = parseFloat(NonCarbonatedSales);
-        } else {
-            test[category[2]][Location] += parseFloat(NonCarbonatedSales);
-        }
-      
-        if (!test[category[3]]) {
-            test[category[3]] = {};
-        }
-        if (!test[category[3]][Location]) {
-            test[category[3]][Location] = parseFloat(WaterSales);
-        } else {
-            test[category[3]][Location] += parseFloat(WaterSales);
-        }
+          }
+          if (!test[category[0]][Location]) {
+              test[category[0]][Location] = parseFloat(CarbonatedSales);
+          } else {
+              test[category[0]][Location] += parseFloat(CarbonatedSales);
+          }
+          if (!test[category[1]]) {
+              test[category[1]] = {};
+          }
+          if (!test[category[1]][Location]) {
+              test[category[1]][Location] = parseFloat(FoodSales);
+          } else {
+              test[category[1]][Location] += parseFloat(FoodSales);
+          }
+          if (!test[category[2]]) {
+              test[category[2]] = {};
+          }
+          if (!test[category[2]][Location]) {
+              test[category[2]][Location] = parseFloat(NonCarbonatedSales);
+          } else {
+              test[category[2]][Location] += parseFloat(NonCarbonatedSales);
+          }
+          if (!test[category[3]]) {
+              test[category[3]] = {};
+          }
+          if (!test[category[3]][Location]) {
+              test[category[3]][Location] = parseFloat(WaterSales);
+          } else {
+              test[category[3]][Location] += parseFloat(WaterSales);
+          }
         
 
-
+          // buat ambil total sales from vm each location
           if (totalSaleFromMachine[Location]) {
             totalSaleFromMachine[Location] += parseFloat(TotalSales);
             totalTransactionsFromMachine[Location] += parseInt(TotalTransactions)
@@ -133,18 +136,21 @@ export const Sidebar = () => {
             totalTransactionsFromMachine[Location] = parseInt(TotalTransactions)
           }
 
+          // buat ambil cash sales from vm each location
           if(cashSalesFromMachine[Location]){
             cashSalesFromMachine[Location] += parseFloat(CashSales)
           }else{
             cashSalesFromMachine[Location] = parseFloat(CashSales)
           }
 
+          // buat ambil cash sales from vm each location
           if(creditSalesFromMachine[Location]){
             creditSalesFromMachine[Location] += parseFloat(CreditSales)
           }else{
             creditSalesFromMachine[Location] = parseFloat(CreditSales)
           }
 
+          // buat ambil sales from vm each category
           categorySales["Carbonated"] += parseFloat(CarbonatedSales)
           categorySales["Food"] += parseFloat(FoodSales)
           categorySales["Water"] += parseFloat(WaterSales)
@@ -152,11 +158,13 @@ export const Sidebar = () => {
           
         })
         
+        // nge rata2in sales tiap location
         uniquePlace.forEach(element => {
           var avg = totalSaleFromMachine[element]/totalTransactionsFromMachine[element]
           avgSales.push(avg)
         });
 
+        // set variable penampung ke utama
         setCategoryTransaction(test)
         // setCategoryTransaction(transactionOnVendingMachineEachcategory)
         setTransactionMonth(transactionOnVendingMachineEachMonth)
@@ -174,10 +182,11 @@ export const Sidebar = () => {
       });
   }, []);
 
+  // kalo data ny masih loading / ada error bakal ngedisplay loading/error
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-
+  // data average value of transaction/chart 1
   const averageData ={
     labels:places,
     datasets: [
@@ -190,6 +199,7 @@ export const Sidebar = () => {
     ]
   }
 
+  // data payment type in each machine/chart 2
   const paymentTypeData = { 
     labels: places,
     datasets: [
@@ -210,6 +220,7 @@ export const Sidebar = () => {
     ]
   }
 
+  // data sales in each category/chart 3
   const categoryData = { 
     labels: category,
     datasets: [
@@ -223,6 +234,7 @@ export const Sidebar = () => {
     ]
   }
 
+  // data peak sales date chine/chart 4
   const dateData = { 
     labels: transactionDate,
     datasets: [
@@ -257,7 +269,8 @@ export const Sidebar = () => {
       
     ]
   }
-
+  
+  // data top selling category across machine/chart 5
   const categoryTransactionData = { 
     labels: places,
     datasets: [
@@ -295,67 +308,60 @@ export const Sidebar = () => {
 
   return (
     <>
-      <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-secondary" aria-label="Sidebar">
+      <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-80 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-main" aria-label="Sidebar">
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-            <ul className="space-y-2 font-medium">
-              <li>
+            <ul className="space-y-2 font-medium font-custom">
+              <li className='mb-5'>
                   <a href="#" className="flex items-start text-2xl p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    New Jersey Vending Machine
+                    <img src="./public/title.png" alt="" />
                   </a>
               </li>
               <li>
-                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-hover transition duration-300 ease-in-out ">
+                    <svg className="w-8 h-8 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                         <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
                         <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
                     </svg>
-                    <span className="ms-3 text-2xl">Dashboard</span>
+                    <span className="ms-3 text-2xl font-custom">Dashboard</span>
                   </a>
               </li>
               <li>
-                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-hover transition duration-300 ease-in-out">
+                    <svg className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
                         <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
                     </svg>
                     <span className="ms-3 text-2xl">Table</span>
                   </a>
               </li>
-              <li>
-                  <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                  <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
-                  </svg>
-                  <span className="ms-3 text-2xl">Filter</span>
-                  </a>
-              </li>
+              
 
             </ul>
         </div>
       </aside>
 
-      <div className="sm:ml-64 bg-main">
+      <div className="sm:ml-64 bg-[url('./public/mario-background.jpg')] bg-repeat bottom-0">
         <div className="">
             <div className="mb-8">
-              <div className="flex items-center justify-start h-24  bg-gray-50 dark:bg-gray-800">
-                  <p className="text-gray-500 pl-8 transition duration-75 text-start group-hover:text-gray-900 color-text text-5xl">
+              <div className="flex items-center justify-center h-24  bg-gray-50 dark:bg-gray-800">
+                  <p className="text-gray-500 pl-12 transition duration-75 text-start group-hover:text-gray-900 color-text text-5xl font-custom">
                     Business Dashboard
                   </p>
               </div>
             </div>
             
-            <div className="flex items-center justify-center h-96 mb-12">
+            <div className="flex items-center justify-center h-96 mb-16 pb-5 bg-white ml-80 mr-80">
               <LineGraph title={chartTitle[0]} data={averageData} xDesc={xDesc[0]} yDesc={yDesc[0]}/>
             </div>
-            <div className="flex items-center justify-center h-96 mb-12 ">
+            <div className="flex items-center justify-center h-96 mb-16 pb-5 bg-white ml-80 mr-80">
               <BarChart title={chartTitle[1]} data={paymentTypeData} xDesc={xDesc[1]} yDesc={yDesc[1]} xStacked={false} yStacked={false} axis={axis[0]}/>
             </div>
-            <div className="flex items-center justify-center h-96 mb-12 ">
+            <div className="flex items-center justify-center h-96 mb-16 pb-5 bg-white ml-80 mr-80">
               <BarChart title={chartTitle[2]} data={categoryData} xDesc={xDesc[2]} yDesc={yDesc[2]} xStacked={false} yStacked={false} axis={axis[0]}/>
             </div>
-            <div className="flex items-center justify-center h-96 mb-12 ">
+            <div className="flex items-center justify-center h-96 mb-16 pb-5 bg-white ml-80 mr-80">
               <BarChart title={chartTitle[3]} data={dateData} xDesc={xDesc[3]} yDesc={yDesc[3]} xStacked={false} yStacked={false} axis={axis[0]}/>
             </div>
-            <div className="flex items-center justify-center h-96 mb-12 ">
+            <div className="flex items-center justify-center h-96 bg-white ml-80 mr-80">
               <BarChart title={chartTitle[3]} data={categoryTransactionData} xDesc={xDesc[3]} yDesc={yDesc[3]} xStacked={true} yStacked={true} axis={axis[1]}/>
             </div>
         </div>
