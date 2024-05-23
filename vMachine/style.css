@@ -1,5 +1,5 @@
 :root {
-  --sidebar-width: 250px;
+  --sidebar-width: 300px;
   --main: #FDE49E;
   --white: #ffffff;
   --sidebar-text-color: white;
@@ -9,21 +9,27 @@
   --content-padding: 20px;
 }
 
-.chartMenu{
+.chartMenu {
   display: none;
 }
 
 body {
-  font-family: 'Press Start 2P', system-ui;
   margin: 0;
   display: flex;
+  font-size: 20px;
+}
+
+.font {
+  font-family: 'Press Start 2P', system-ui;
+  font-weight: 200;
+  font-style: normal;
 }
 
 .sidebar {
   width: var(--sidebar-width);
   background-color: var(--main);
   color: var(--sidebar-text-color);
-  height: 120vh;
+  height: 100vh;
   font-weight: bold;
   padding: var(--content-padding);
   box-sizing: border-box;
@@ -54,6 +60,11 @@ body {
   transition: background-color 0.3s;
 }
 
+.header {
+  justify-content: center;
+  text-align: center;
+}
+
 .menu-link:hover {
   background-color: var(--menu-link-bg-hover);
 }
@@ -67,21 +78,28 @@ body {
 }
 
 .chart-container {
-  margin: auto;
-  max-height: calc(100vh - 40px); 
-  width: 80%;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 20px;
+  justify-items: center;
+  padding-top: 60px;
+}
+
+.inner-container {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
   gap: 20px;
 }
 
 .box {
   height: 300px;
-  width: 100%;
+  width: 518px;
   background-color: white;
 }
 
-#chart5 {
-  grid-column: span 2; /* This makes chart5 span across two columns */
+.center{
+  align-items: center;
 }
